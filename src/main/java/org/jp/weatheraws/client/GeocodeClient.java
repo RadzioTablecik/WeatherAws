@@ -1,9 +1,8 @@
 package org.jp.weatheraws.client;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jp.weatheraws.dto.geocode.CityDataDto;
 import org.jp.weatheraws.dto.geocode.GeoCodingResponseDto;
-import org.jp.weatheraws.model.CoordinatesWGS84;
+import org.jp.weatheraws.model.City;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,7 @@ public class GeocodeClient {
      * Sample request:
      * <a href="https://geocoding-api.open-meteo.com/v1/search?name=wroclaw&count=1&language=en&format=json"></a>
      */
-    public CoordinatesWGS84 fetchCoordinates(String cityName) {
+    public GeoCodingResponseDto fetchCoordinates(City cityName) {
         log.info("Fetching coordinates for city: {}", cityName);
 
         GeoCodingResponseDto responseDto = restClient.get()
@@ -45,8 +44,6 @@ public class GeocodeClient {
             throw new RuntimeException("City not found: " + cityName);
         }
 
-        CityDataDto city = responseDto.results().getFirst();
-
-        return new CoordinatesWGS84(city.latitude(), city.longitude());
+        return responseDto;
     }
 }

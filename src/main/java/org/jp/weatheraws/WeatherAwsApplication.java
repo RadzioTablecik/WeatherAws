@@ -1,5 +1,7 @@
 package org.jp.weatheraws;
 
+import org.jp.weatheraws.dto.aws.WeatherRequest;
+import org.jp.weatheraws.model.City;
 import org.jp.weatheraws.model.CoordinatesWGS84;
 import org.jp.weatheraws.model.WeatherResponse;
 import org.jp.weatheraws.service.WeatherService;
@@ -17,14 +19,11 @@ public class WeatherAwsApplication {
     }
 
     @Bean
-    public Function<String, WeatherResponse> getWroclawTemperature(WeatherService weatherService) {
+    public Function<WeatherRequest, WeatherResponse> getWroclawTemperature(WeatherService weatherService) {
         return input -> {
-            CoordinatesWGS84 coordinatesWGS84 = new CoordinatesWGS84(
-                    51.1,
-                    17.0333
-            );
+            City city = new City(input.city());
 
-            return weatherService.getCurrentTemperature(coordinatesWGS84);
+            return weatherService.getWeatherForCity(city);
         };
     }
 

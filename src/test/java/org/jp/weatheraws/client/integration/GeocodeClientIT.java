@@ -2,6 +2,8 @@ package org.jp.weatheraws.client.integration;
 
 import org.jp.weatheraws.client.GeocodeClient;
 import org.jp.weatheraws.config.ClientConfig;
+import org.jp.weatheraws.dto.geocode.GeoCodingResponseDto;
+import org.jp.weatheraws.model.City;
 import org.jp.weatheraws.model.CoordinatesWGS84;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
@@ -22,16 +24,16 @@ public class GeocodeClientIT {
     @Test
     public void shouldFetchRealDataFromGeocodingApi() {
         // GIVEN
-        String cityName = "Wroclaw";
+        City cityName = new City("Wroclaw");
 
         // WHEN
-        CoordinatesWGS84 response = geocodeClient.fetchCoordinates(cityName);
+        GeoCodingResponseDto response = geocodeClient.fetchCoordinates(cityName);
 
         // THEN
         assertAll(
                 () -> assertNotNull(response),
-                () -> assertTrue(Math.abs(51.1 - response.latitude()) < 0.5, "Latitude should be close to 51.1"),
-                () -> assertTrue(Math.abs(17.0 - response.longitude()) < 0.5, "Longitude should be close to 17.0")
+                () -> assertTrue(Math.abs(51.1 - response.results().getFirst().latitude()) < 0.5, "Latitude should be close to 51.1"),
+                () -> assertTrue(Math.abs(17.0 - response.results().getFirst().longitude()) < 0.5, "Longitude should be close to 17.0")
         );
     }
 }
