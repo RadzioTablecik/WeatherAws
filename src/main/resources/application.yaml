@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: WeatherAws
+clients:
+  weather:
+    openmeteo: https://api.open-meteo.com/v1
