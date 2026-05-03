@@ -4,3 +4,5 @@ spring:
 clients:
   weather:
     openmeteo: https://api.open-meteo.com/v1
+  geocode:
+    openmeteo: https://geocoding-api.open-meteo.com/v1

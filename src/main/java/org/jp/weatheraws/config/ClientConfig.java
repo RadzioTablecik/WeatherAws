@@ -1,6 +1,5 @@
 package org.jp.weatheraws.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
@@ -14,7 +13,7 @@ public class ClientConfig {
     @Bean
     public RestClient.Builder restClientBuilder() {
         JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory();
-        requestFactory.setReadTimeout(Duration.ofSeconds(5));
+        requestFactory.setReadTimeout(Duration.ofSeconds(15));
 
         return RestClient.builder().requestFactory(requestFactory);
     }
