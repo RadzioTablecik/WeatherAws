@@ -26,10 +26,10 @@ public class WeatherClientTests {
 
     @BeforeEach
     void setUp() {
-        RestClient.Builder builder = RestClient.builder()
-                .baseUrl("https://api.open-meteo.com/v1");
+        RestClient.Builder builder = RestClient.builder();
+
         mockServer = MockRestServiceServer.bindTo(builder).build();
-        weatherClient = new WeatherClient(builder.build());
+        weatherClient = new WeatherClient(builder, "https://api.open-meteo.com/v1");
     }
 
     @Test

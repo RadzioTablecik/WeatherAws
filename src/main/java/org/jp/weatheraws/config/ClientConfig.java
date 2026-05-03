@@ -10,20 +10,12 @@ import java.time.Duration;
 
 @Configuration
 public class ClientConfig {
-    @Value("${clients.weather.openmeteo}")
-    private String openMeteoUrl;
 
     @Bean
-    public RestClient weatherRestClient() {
+    public RestClient.Builder restClientBuilder() {
         JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory();
         requestFactory.setReadTimeout(Duration.ofSeconds(5));
-        return RestClient.builder()
-                .baseUrl(openMeteoUrl)
-                .build();
+
+        return RestClient.builder().requestFactory(requestFactory);
     }
-//
-//    @Bean
-//    public RestClient geocodingClient() {
-//        return RestClient.create();
-//    }
 }

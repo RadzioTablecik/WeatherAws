@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.jp.weatheraws.dto.openmeteo.OpenMeteoResponseDto;
 import org.jp.weatheraws.model.CoordinatesWGS84;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -13,8 +14,9 @@ import org.springframework.web.client.RestClient;
 public class WeatherClient {
     private final RestClient restClient;
 
-    public WeatherClient(@Qualifier("weatherRestClient") RestClient restClient) {
-        this.restClient = restClient;
+    public WeatherClient(RestClient.Builder builder,
+                         @Value("${clients.weather.openmeteo}") String url) {
+        this.restClient = builder.baseUrl(url).build();
     }
 
     /**
