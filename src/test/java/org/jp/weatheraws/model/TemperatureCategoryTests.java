@@ -1,12 +1,13 @@
 package org.jp.weatheraws.model;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class TemperatureCategoryTests {
+@Tag("unit")
+public class TemperatureCategoryTests {
 
     @ParameterizedTest
     @CsvSource({
@@ -20,12 +21,12 @@ class TemperatureCategoryTests {
             "0.0,  COLD",
             "-5.0, FREEZING"
     })
-    void shouldReturnCorrectCategoryForTemperature(double temp, TemperatureCategory expected) {
+    public void shouldReturnCorrectCategoryForTemperature(double temp, TemperatureCategory expected) {
         assertEquals(expected, TemperatureCategory.from(temp));
     }
 
     @Test
-    void shouldReturnFreezingForExtremelyLowTemperature() {
+    public void shouldReturnFreezingForExtremelyLowTemperature() {
         assertEquals(TemperatureCategory.FREEZING, TemperatureCategory.from(-273.15));
     }
 }

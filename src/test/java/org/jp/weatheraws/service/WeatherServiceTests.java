@@ -12,9 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @Tag("unit")
@@ -26,7 +24,7 @@ public class WeatherServiceTests {
     private WeatherService weatherService;
 
     @Test
-    void shouldReturnWeatherResponseWithCorrectCategory() {
+    public void shouldReturnWeatherResponseWithCorrectCategory() {
         // GIVEN
         CoordinatesWGS84 coords = new CoordinatesWGS84(51.1, 17.0);
         double mockTemp = 25.5;

@@ -21,7 +21,7 @@ public class WeatherClientIT {
     private WeatherClient weatherClient;
 
     @Test
-    void shouldFetchRealDataFromOpenMeteo() {
+    public void shouldFetchRealDataFromOpenMeteo() {
         // GIVEN
         CoordinatesWGS84 coordinatesWGS84 = new CoordinatesWGS84(
                 51.1,

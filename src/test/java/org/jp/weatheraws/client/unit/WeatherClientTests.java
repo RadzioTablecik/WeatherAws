@@ -25,7 +25,7 @@ public class WeatherClientTests {
     private MockRestServiceServer mockServer;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         RestClient.Builder builder = RestClient.builder();
 
         mockServer = MockRestServiceServer.bindTo(builder).build();
@@ -33,7 +33,7 @@ public class WeatherClientTests {
     }
 
     @Test
-    void shouldParseWeatherJsonCorrectly() {
+    public void shouldParseWeatherJsonCorrectly() {
         // GIVEN
         String jsonResponse = """
             {
@@ -66,7 +66,7 @@ public class WeatherClientTests {
     }
 
     @Test
-    void shouldThrowExceptionWhenApiReturnsError() {
+    public void shouldThrowExceptionWhenApiReturnsError() {
         // GIVEN
         CoordinatesWGS84 coords = new CoordinatesWGS84(
                 51.1,
