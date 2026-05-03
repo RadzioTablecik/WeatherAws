@@ -8,9 +8,11 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.test.web.client.response.MockRestResponseCreators;
 import org.springframework.web.client.RestClient;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.ExpectedCount.once;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.queryParam;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
@@ -47,8 +49,6 @@ public class WeatherClientTests {
                 17.0333
         );
 
-
-
         mockServer.expect(once(), requestTo(startsWith("https://api.open-meteo.com/v1/forecast")))
                 .andExpect(queryParam("latitude", String.valueOf(coordinatesWGS84.latitude())))
                 .andExpect(queryParam("longitude", String.valueOf(coordinatesWGS84.longitude())))
@@ -63,5 +63,25 @@ public class WeatherClientTests {
         assertEquals(22.5, result.current().temperature());
         assertEquals("2026-05-03T13:00", result.current().time());
         mockServer.verify();
+    }
+
+    @Test
+    void shouldThrowExceptionWhenApiReturnsError() {
+        // GIVEN
+        CoordinatesWGS84 coords = new CoordinatesWGS84(
+                51.1,
+                17.0333
+        );
+
+        mockServer.expect(once(), requestTo(startsWith("https://api.open-meteo.com/v1/forecast")))
+                .andRespond(MockRestResponseCreators.withBadRequest());
+
+        // WHEN
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            weatherClient.fetchCurrentTemperature(coords);
+        });
+
+        // THEN
+        assertEquals("OpenMeteo API error: 400 BAD_REQUEST", exception.getMessage());
     }
 }

@@ -6,6 +6,7 @@ import org.jp.weatheraws.dto.openmeteo.OpenMeteoResponseDto;
 import org.jp.weatheraws.model.CoordinatesWGS84;
 import org.jp.weatheraws.model.TemperatureCategory;
 import org.jp.weatheraws.model.WeatherResponse;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+@Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class WeatherServiceTests {
     @Mock

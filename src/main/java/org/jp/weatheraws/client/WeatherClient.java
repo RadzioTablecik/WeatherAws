@@ -23,7 +23,7 @@ public class WeatherClient {
      * <a href="https://api.open-meteo.com/v1/forecast?latitude=51.1&longitude=17.0333&current=temperature_2m&timezone=auto"></a>
      */
     public OpenMeteoResponseDto fetchCurrentTemperature(CoordinatesWGS84 coordinates) {
-        log.debug("Fetching weather for lat: {}, lon: {}", coordinates.latitude(), coordinates.longitude());
+        log.info("Fetching weather for lat: {}, lon: {}", coordinates.latitude(), coordinates.longitude());
 
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder
