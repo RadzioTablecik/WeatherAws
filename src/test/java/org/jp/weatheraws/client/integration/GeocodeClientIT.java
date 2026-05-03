@@ -4,7 +4,6 @@ import org.jp.weatheraws.client.GeocodeClient;
 import org.jp.weatheraws.config.ClientConfig;
 import org.jp.weatheraws.dto.geocode.GeoCodingResponseDto;
 import org.jp.weatheraws.model.City;
-import org.jp.weatheraws.model.CoordinatesWGS84;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

@@ -3,7 +3,6 @@ package org.jp.weatheraws.client;
 import lombok.extern.slf4j.Slf4j;
 import org.jp.weatheraws.dto.openmeteo.OpenMeteoResponseDto;
 import org.jp.weatheraws.model.CoordinatesWGS84;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;

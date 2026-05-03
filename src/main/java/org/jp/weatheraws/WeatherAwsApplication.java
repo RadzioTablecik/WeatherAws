@@ -2,7 +2,6 @@ package org.jp.weatheraws;
 
 import org.jp.weatheraws.dto.aws.WeatherRequest;
 import org.jp.weatheraws.model.City;
-import org.jp.weatheraws.model.CoordinatesWGS84;
 import org.jp.weatheraws.model.WeatherResponse;
 import org.jp.weatheraws.service.WeatherService;
 import org.springframework.boot.SpringApplication;
