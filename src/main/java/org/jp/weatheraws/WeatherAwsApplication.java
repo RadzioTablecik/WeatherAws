@@ -1,5 +1,6 @@
 package org.jp.weatheraws;
 
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import org.jp.weatheraws.model.City;
 import org.jp.weatheraws.model.WeatherResponse;
 import org.jp.weatheraws.service.WeatherService;
@@ -18,13 +19,17 @@ public class WeatherAwsApplication {
         SpringApplication.run(WeatherAwsApplication.class, args);
     }
 
+
     @Bean
-    public Function<Map<String, Object>, WeatherResponse> weatherFunction(WeatherService service) {
+    public Function<APIGatewayProxyRequestEvent, WeatherResponse> weatherFunction(WeatherService service) {
         return input -> {
-            String cityName = Optional.ofNullable((Map<String, String>) input.get("queryStringParameters"))
+            Map<String, String> params = input.getQueryStringParameters();
+
+            String cityName = Optional.ofNullable(params)
                     .map(p -> p.get("city"))
                     .filter(s -> !s.isBlank())
                     .orElseThrow(() -> new IllegalArgumentException("Query parameter 'city' is required"));
+
 
             return service.getWeatherForCity(new City(cityName));
         };
