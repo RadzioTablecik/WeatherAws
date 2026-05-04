@@ -26,7 +26,11 @@ public class WeatherAwsApplication {
                     .filter(s -> !s.isBlank())
                     .orElseThrow(() -> new IllegalArgumentException("Query parameter 'city' is required"));
 
-            return service.getWeatherForCity(new City(cityName));
+            String providerName = Optional.ofNullable((Map<String, String>) input.get("queryStringParameters"))
+                    .map(p -> p.get("provider"))
+                    .orElse(null);
+
+            return service.getWeatherForCity(new City(cityName), providerName);
         };
     }
 

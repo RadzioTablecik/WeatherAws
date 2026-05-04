@@ -1,8 +1,8 @@
 package org.jp.weatheraws.client.unit;
 
-import org.jp.weatheraws.client.WeatherClient;
-import org.jp.weatheraws.dto.openmeteo.OpenMeteoResponseDto;
+import org.jp.weatheraws.client.OpenMeteoClient;
 import org.jp.weatheraws.model.CoordinatesWGS84;
+import org.jp.weatheraws.model.WeatherData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -19,9 +19,9 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @Tag("unit")
-public class WeatherClientTests {
+public class OpenMeteoClientTests {
 
-    private WeatherClient weatherClient;
+    private OpenMeteoClient openMeteoClient;
     private MockRestServiceServer mockServer;
 
     @BeforeEach
@@ -29,7 +29,7 @@ public class WeatherClientTests {
         RestClient.Builder builder = RestClient.builder();
 
         mockServer = MockRestServiceServer.bindTo(builder).build();
-        weatherClient = new WeatherClient(builder, "https://api.open-meteo.com/v1");
+        openMeteoClient = new OpenMeteoClient(builder, "https://api.open-meteo.com/v1");
     }
 
     @Test
@@ -57,11 +57,11 @@ public class WeatherClientTests {
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         // WHEN
-        OpenMeteoResponseDto result = weatherClient.fetchCurrentTemperature(coordinatesWGS84);
+        WeatherData result = openMeteoClient.fetchCurrentTemperature(coordinatesWGS84);
 
         // THEN
-        assertEquals(22.5, result.current().temperature());
-        assertEquals("2026-05-03T13:00", result.current().time());
+        assertEquals(22.5, result.temperature());
+        assertEquals("2026-05-03T13:00", result.time());
         mockServer.verify();
     }
 
@@ -78,7 +78,7 @@ public class WeatherClientTests {
 
         // WHEN
         RuntimeException exception = assertThrows(RuntimeException.class, () -> {
-            weatherClient.fetchCurrentTemperature(coords);
+            openMeteoClient.fetchCurrentTemperature(coords);
         });
 
         // THEN

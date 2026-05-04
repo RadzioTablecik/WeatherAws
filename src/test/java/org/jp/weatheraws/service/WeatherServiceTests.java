@@ -1,67 +1,80 @@
 package org.jp.weatheraws.service;
 
 import org.jp.weatheraws.client.GeocodeClient;
-import org.jp.weatheraws.client.WeatherClient;
+import org.jp.weatheraws.client.WeatherProvider;
 import org.jp.weatheraws.dto.geocode.CityDataDto;
 import org.jp.weatheraws.dto.geocode.GeoCodingResponseDto;
-import org.jp.weatheraws.dto.openmeteo.CurrentDto;
-import org.jp.weatheraws.dto.openmeteo.OpenMeteoResponseDto;
-import org.jp.weatheraws.model.City;
-import org.jp.weatheraws.model.CoordinatesWGS84;
-import org.jp.weatheraws.model.TemperatureCategory;
-import org.jp.weatheraws.model.WeatherResponse;
+import org.jp.weatheraws.model.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @Tag("unit")
 @ExtendWith(MockitoExtension.class)
 public class WeatherServiceTests {
+    @Mock
+    private WeatherProvider openMeteoProvider;
 
     @Mock
-    private WeatherClient weatherClient;
+    private WeatherProvider secondaryProvider;
 
     @Mock
     private GeocodeClient geocodeClient;
 
-    @InjectMocks
     private WeatherService weatherService;
 
+    @BeforeEach
+    public void setUp() {
+        weatherService = new WeatherService(List.of(openMeteoProvider, secondaryProvider), geocodeClient);
+    }
+
     @Test
-    public void shouldReturnWeatherResponseForGivenCityName() {
+    public void shouldReturnWeatherUsingDefaultProvider() {
         // GIVEN
         City city = new City("Wroclaw");
         CoordinatesWGS84 coords = new CoordinatesWGS84(51.1, 17.0);
 
-        GeoCodingResponseDto mockGeoResponse = new GeoCodingResponseDto(
-                List.of(new CityDataDto(51.1, 17.0))
-        );
-        when(geocodeClient.fetchCoordinates(city)).thenReturn(mockGeoResponse);
-
-        double mockTemp = 25.5;
-        String mockTime = "2024-03-20T12:00";
-
-        OpenMeteoResponseDto mockResponse = new OpenMeteoResponseDto(
-                new CurrentDto(mockTemp, mockTime)
-        );
-        when(weatherClient.fetchCurrentTemperature(coords)).thenReturn(mockResponse);
+        when(geocodeClient.fetchCoordinates(city)).thenReturn(createMockGeoResponse(51.1, 17.0));
+        when(openMeteoProvider.fetchCurrentTemperature(coords)).thenReturn(new WeatherData(25.0, "2026-05-04T12:00"));
 
         // WHEN
-        WeatherResponse result = weatherService.getWeatherForCity(city);
+        WeatherResponse response = weatherService.getWeatherForCity(city, null);
 
         // THEN
-        assertEquals("Wroclaw", result.city());
-        assertThat(result.temperature()).isEqualTo(25.5);
-        assertThat(result.time()).isEqualTo(mockTime);
-        assertThat(result.temperatureCategory()).isEqualTo(TemperatureCategory.WARM);
+        assertThat(response.city()).isEqualTo("Wroclaw");
+        assertThat(response.temperature()).isEqualTo(25.0);
+        assertThat(response.temperatureCategory()).isEqualTo(TemperatureCategory.WARM);
 
-        System.out.println(result);
+        verify(openMeteoProvider).fetchCurrentTemperature(any());
+        verify(secondaryProvider, never()).fetchCurrentTemperature(any());
+    }
+
+    @Test
+    public void shouldSelectSpecificProvider() {
+        // GIVEN
+        City city = new City("Berlin");
+        when(geocodeClient.fetchCoordinates(city)).thenReturn(createMockGeoResponse(52.5, 13.4));
+
+        when(secondaryProvider.supports("accuweather")).thenReturn(true);
+        when(secondaryProvider.fetchCurrentTemperature(any())).thenReturn(new WeatherData(10.0, "2026-05-04T12:00"));
+
+        // WHEN
+        weatherService.getWeatherForCity(city, "accuweather");
+
+        // THEN
+        verify(secondaryProvider).fetchCurrentTemperature(any());
+        verify(openMeteoProvider, never()).fetchCurrentTemperature(any());
+    }
+
+    // Helper function for mocking geolocation
+    private GeoCodingResponseDto createMockGeoResponse(double lat, double lon) {
+        return new GeoCodingResponseDto(List.of(new CityDataDto(lat, lon)));
     }
 }

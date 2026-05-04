@@ -1,9 +1,9 @@
 package org.jp.weatheraws.client.integration;
 
-import org.jp.weatheraws.client.WeatherClient;
+import org.jp.weatheraws.client.OpenMeteoClient;
 import org.jp.weatheraws.config.ClientConfig;
-import org.jp.weatheraws.dto.openmeteo.OpenMeteoResponseDto;
 import org.jp.weatheraws.model.CoordinatesWGS84;
+import org.jp.weatheraws.model.WeatherData;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,12 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Tag("integration")
-@SpringBootTest(classes = {WeatherClient.class, ClientConfig.class})
+@SpringBootTest(classes = {OpenMeteoClient.class, ClientConfig.class})
 @Disabled("Manual verification: Requires real API connectivity")
-public class WeatherClientIT {
+public class OpenMeteoClientIT {
 
     @Autowired
-    private WeatherClient weatherClient;
+    private OpenMeteoClient openMeteoClient;
 
     @Test
     public void shouldFetchRealDataFromOpenMeteo() {
@@ -29,15 +29,14 @@ public class WeatherClientIT {
         );
 
         // WHEN
-        OpenMeteoResponseDto response = weatherClient.fetchCurrentTemperature(coordinatesWGS84);
+        WeatherData response = openMeteoClient.fetchCurrentTemperature(coordinatesWGS84);
 
         // THEN
         assertNotNull(response, "Response should not be null");
-        assertNotNull(response.current(), "Current weather data should be present");
 
-        assertTrue(response.current().temperature() > -100 && response.current().temperature() < 100,
+        assertTrue(response.temperature() > -100 && response.temperature() < 100,
                 "Temperature should be within a realistic range");
 
-        System.out.println("Temperature in Wroclaw: " + response.current().temperature() + "°C at " + response.current().time());
+        System.out.println("Temperature in Wroclaw: " + response.temperature() + "°C at " + response.time());
     }
 }
