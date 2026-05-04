@@ -4,5 +4,6 @@ public record WeatherResponse (
     String city,
     Double temperature,
     String time,
-    TemperatureCategory temperatureCategory
+    TemperatureCategory temperatureCategory,
+    String provider
 ) {}

@@ -4,5 +4,8 @@ spring:
 clients:
   weather:
     openmeteo: https://api.open-meteo.com/v1
+    pirateweather:
+      url: https://api.pirateweather.net
+      key: ${PIRATE_KEY}
   geocode:
     openmeteo: https://geocoding-api.open-meteo.com/v1

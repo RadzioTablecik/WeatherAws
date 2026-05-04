@@ -31,7 +31,8 @@ public class WeatherService {
                 city.name(),
                 weatherData.temperature(),
                 weatherData.time(),
-                TemperatureCategory.from(weatherData.temperature())
+                TemperatureCategory.from(weatherData.temperature()),
+                providerName
         );
     }
 }
